@@ -1,27 +1,118 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <title>Productos</title>
-</head>
-<body>
-    <div class="navbar">
-        <h1>Productos Disponibles</h1>
+{% extends "base.html" %}
+
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Botones de categorías -->
+    <div class="categorias">
+        {% for id_categoria, categoria in categorias %}
+        <button class="categoria-button" onclick="mostrarCategoria('{{ categoria }}')">
+            {{ categoria.replace('_', ' ').capitalize() }}
+        </button>
+        {% endfor %}
     </div>
-    <div class="container">
-        <div class="productos-grid">
-            {% for producto in productos %}
-            <div class="producto-card">
-                <img src="{{ producto[3] }}" alt="{{ producto[1] }}" class="producto-imagen">
-                <h3>{{ producto[1] }}</h3>
-                <p class="descripcion">{{ producto[4] }}</p>
-                <p class="precio">Precio: ${{ producto[2] }}</p>
-                <a href="{{ url_for('agregar_carrito', id_producto=producto[0]) }}" class="button">Agregar al Carrito</a>
-            </div>
-            {% endfor %}
+
+    <!-- Productos agrupados por categoría -->
+    {% for categoria, productos in productos_por_categoria.items() %}
+    <div id="{{ categoria }}" class="productos-grid" style="display: none;">
+        <h2>{{ categoria.replace('_', ' ').capitalize() }}</h2>
+        {% for producto in productos %}
+        <div class="producto-card">
+            <img class="producto-imagen" src="{{ producto[3] }}" alt="{{ producto[1] }}">
+            <h3>{{ producto[1] }}</h3>
+            <p>Precio: ${{ producto[2] }}</p>
+            <p>Disponibles: {{ producto[5] }}</p>
+            <input type="number" id="cantidad-{{ producto[0] }}" min="1" max="{{ producto[5] }}" value="1">
+            <button onclick="agregarAlCarrito({{ producto[0] }})" class="button">Agregar al Carrito</button>
         </div>
+        {% endfor %}
     </div>
-</body>
-</html>
+    {% endfor %}
+</div>
+
+
+<script>
+    // Función para mostrar la categoría seleccionada
+    function mostrarCategoria(categoriaId) {
+        // Ocultar todas las categorías
+        const secciones = document.querySelectorAll('.productos-grid');
+        secciones.forEach(section => {
+            section.style.display = 'none';
+        });
+
+        // Mostrar los productos de la categoría seleccionada
+        const seleccionada = document.getElementById(`categoria-${categoriaId}`);
+        if (seleccionada) {
+            seleccionada.style.display = 'grid';
+        }
+    }
+
+    // Mostrar la primera categoría al cargar
+    document.addEventListener('DOMContentLoaded', () => {
+        const botones = document.querySelectorAll('.categoria-button');
+        if (botones.length > 0) {
+            const primeraCategoriaId = botones[0].getAttribute('onclick').match(/'(\d+)'/)[1];
+            mostrarCategoria(primeraCategoriaId);
+        }
+    });
+</script>
+
+<style>
+    .producto-imagen {
+        width: 150px; /* Ajustar tamaño moderado */
+        height: 150px;
+        object-fit: cover; /* Mantener proporciones */
+        border-radius: 5px; /* Bordes ligeramente redondeados */
+        margin-bottom: 10px;
+    }
+
+    .producto-card {
+        text-align: center;
+        padding: 10px;
+        background-color: #444; /* Fondo gris */
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+
+    .productos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Ajustar columnas para tamaños moderados */
+        gap: 20px;
+    }
+
+    .categorias {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .categoria-button {
+        margin: 0 10px;
+        padding: 10px 20px;
+        background-color: #ffcc00;
+        color: #333;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .categoria-button:hover {
+        background-color: #e6b800;
+    }
+
+    .button {
+        display: inline-block;
+        padding: 8px 12px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .button:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Compras Realizadas{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="{{ url_for('ver_carrito') }}" class="button">Regresar al Carrito</a>
+
+    <h2>Compras Realizadas en los últimos {{ rango }} días</h2>
+
+    {% if compras %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Compra</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for compra in compras %}
+                <tr>
+                    <td>{{ compra[0] }}</td>
+                    <td>{{ compra[1] }}</td>
+                    <td>{{ compra[2] }}</td>
+                    <td>${{ compra[3] }}</td>
+                    <td>{{ compra[4] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay compras realizadas en este periodo.</p>
+    {% endif %}
+</div>
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        background-color: #444;
+        color: #fff;
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+</style>
+{% endblock %}

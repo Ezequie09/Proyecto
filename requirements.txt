@@ -1,2 +1,3 @@
-Flask
-Flask-MySQLdb
+Flask==2.2.2
+Flask-MySQLdb==0.2.0
+reportlab==3.6.12

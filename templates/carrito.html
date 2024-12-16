@@ -1,55 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <title>Carrito</title>
-    <style>
-        .producto-imagen {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-right: 10px;
-        }
-        .producto-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 1rem 0;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
-        .detalle-producto {
-            flex: 1;
-            margin-left: 1rem;
-        }
-        .total {
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-top: 20px;
-        }
-        .button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <a href="{{ url_for('productos') }}" class="button">Regresar a Productos</a>
-        <h2>Productos en el Carrito</h2>
+{% extends "base.html" %}
+
+{% block title %}Carrito de Compras{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="{{ url_for('productos') }}" class="button">Regresar</a>
+    <a href="{{ url_for('compras_realizadas', rango=7) }}" class="button">Compras Realizadas (7 días)</a>
+    <a href="{{ url_for('compras_realizadas', rango=30) }}" class="button">Compras Realizadas (30 días)</a>
+    <h2>Productos en el Carrito</h2>
+    
+        
+    {% if carrito|length > 0 %}
         {% for item in carrito %}
         <div class="producto-card">
             <img src="{{ item['imagen'] }}" alt="{{ item['nombre'] }}" class="producto-imagen">
@@ -57,29 +18,140 @@
                 <h3>{{ item['nombre'] }}</h3>
                 <p class="descripcion">{{ item['descripcion'] }}</p>
                 <p class="precio">Precio: ${{ item['precio'] }}</p>
+                <p class="cantidad">Cantidad: {{ item['cantidad'] }}</p>
             </div>
-            <a href="{{ url_for('eliminar_carrito', id_producto=item['id_producto']) }}" class="button">Eliminar</a>
+            <!-- Botón para eliminar el producto con JavaScript -->
+            <button onclick="eliminarDelCarrito({{ item['id_producto'] }})" class="button">Eliminar</button>
         </div>
         {% endfor %}
         <p class="total">Total a pagar: ${{ total }}</p>
 
         <h2>Datos de Pago</h2>
-        <form action="{{ url_for('comprar') }}" method="POST">
-
-            <label for="nombre">Nombre del Titular:</label>
-            <input type="text" name="nombre" required>
-            
-            <label for="tarjeta">Número de Tarjeta:</label>
-            <input type="text" name="tarjeta" required maxlength="16" pattern="\d{16}">
-            
-            <label for="expiracion">Fecha de Expiración:</label>
-            <input type="text" name="expiracion" required placeholder="MM/AA" pattern="\d{2}/\d{2}">
-            
-            <label for="cvv">Código CVV:</label>
-            <input type="text" name="cvv" required maxlength="3" pattern="\d{3}">
-            
+        <form action="{{ url_for('comprar') }}" method="POST" class="form">
+            <div class="form-group">
+                <label for="nombre">Nombre del Titular:</label>
+                <input type="text" name="nombre" required class="input-field">
+            </div>
+            <div class="form-group">
+                <label for="tarjeta">Número de Tarjeta:</label>
+                <input type="text" name="tarjeta" required maxlength="16" pattern="\d{16}" class="input-field">
+            </div>
+            <div class="form-group">
+                <label for="expiracion">Fecha de Expiración:</label>
+                <input type="text" name="expiracion" required placeholder="MM/AA" pattern="\d{2}/\d{2}" class="input-field">
+            </div>
+            <div class="form-group">
+                <label for="cvv">Código CVV:</label>
+                <input type="text" name="cvv" required maxlength="3" pattern="\d{3}" class="input-field">
+            </div>
             <button type="submit" class="button">Pagar</button>
+            
         </form>
+    {% else %}
+        <p>No hay productos en el carrito. <a href="{{ url_for('productos') }}" class="link">Regresar a productos</a>.</p>
+    {% endif %}
+
+    {% if ticket_path %}
+    <div class="compra-confirmada">
+        <h2>Compra realizada con éxito</h2>
+        <p>Gracias por tu compra. Haz clic en el enlace para descargar tu ticket:</p>
+        <a href="/{{ ticket_path }}" target="_blank" class="button">Descargar Ticket</a>
     </div>
-</body>
-</html>
+    {% endif %}
+</div>
+
+<script>
+    function eliminarDelCarrito(productoId) {
+        // Realizar una solicitud GET al servidor para eliminar el producto
+        fetch(`/eliminar_carrito?id_producto=${productoId}`, {
+            method: 'GET', // Cambia a POST si tu backend está configurado para usar ese método
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message); // Muestra un mensaje de éxito
+                location.reload(); // Recarga la página para reflejar los cambios en el carrito
+            } else {
+                alert(data.message); // Muestra un mensaje de error
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error); // Registra el error en la consola
+            alert('Ocurrió un error al intentar eliminar el producto del carrito. Inténtalo de nuevo.');
+        });
+    }
+</script>
+
+<style>
+    .producto-imagen {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin-right: 15px;
+    }
+
+    .producto-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        margin-bottom: 15px;
+    }
+
+    .detalle-producto {
+        flex: 1;
+        margin-left: 15px;
+    }
+
+    .total {
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-top: 20px;
+    }
+
+    .button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .button:hover {
+        background-color: #0056b3;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .compra-confirmada {
+        margin-top: 30px;
+        text-align: center;
+        background-color: #e9f7ef;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #c3e6cb;
+    }
+
+    .compra-confirmada h2 {
+        color: #155724;
+    }
+
+    .compra-confirmada a.button {
+        background-color: #28a745;
+    }
+</style>
+{% endblock %}

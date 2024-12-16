@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compra Exitosa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Compra realizada con éxito</h2>
+        <p>Gracias por tu compra. Haz clic en el enlace para descargar tu ticket:</p>
+        <a href="/{{ ticket_path }}" target="_blank" class="button">Descargar Ticket</a>
+    </div>
+</body>
+</html>

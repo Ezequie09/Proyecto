@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Tu Tienda</title>
+    <link rel="stylesheet" href="path/to/tu-estilo.css">
+    <!-- Aquí puedes agregar otros enlaces a CSS o scripts -->
+</head>
+<body>
+    <!-- Contenido del checkout aquí -->
+    <div class="checkout-container">
+        <h1>Finalizar compra</h1>
+    
+        <!-- Resumen del carrito de compras -->
+        <div class="cart-summary">
+            <h2>Resumen de tu pedido</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se llenarán los productos dinámicamente -->
+                    <tr>
+                        <td>Nombre del Producto</td>
+                        <td>1</td>
+                        <td>$100</td>
+                        <td>$100</td>
+                    </tr>
+                    <!-- Fin de ejemplo de producto -->
+                </tbody>
+            </table>
+            <p><strong>Total a pagar: $100</strong></p>
+        </div>
+    
+        <!-- Datos de envío -->
+        <div class="shipping-info">
+            <h2>Dirección de Envío</h2>
+            <form action="procesar_pago.php" method="POST">
+                <label for="nombre">Nombre completo</label>
+                <input type="text" id="nombre" name="nombre" required>
+                
+                <label for="direccion">Dirección</label>
+                <input type="text" id="direccion" name="direccion" required>
+                
+                <label for="ciudad">Ciudad</label>
+                <input type="text" id="ciudad" name="ciudad" required>
+    
+                <label for="codigo-postal">Código Postal</label>
+                <input type="text" id="codigo-postal" name="codigo-postal" required>
+    
+                <button type="submit" class="btn-submit">Pagar</button>
+            </form>
+        </div>
+    </div>
+    
+</body>
+</html>

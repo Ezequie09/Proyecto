@@ -1,31 +1,21 @@
 {% extends "base.html" %}
+
+{% block title %}Iniciar Sesión{% endblock %}
+
 {% block content %}
-<form action="{{ url_for('login_user') }}" method="POST">
-    <label for="usuario">Usuario:</label>
-    <input type="text" name="usuario" required>
-    <label for="correo">Correo:</label>
-    <input type="email" name="correo" required>
-    <label for="contrasena">Contraseña:</label>
-    <input type="password" name="contrasena" required>
-    <button type="submit" class="button">Iniciar Sesión</button>
-</form>
-{% endblock %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión</title>
-</head>
-<body>
+<div class="container">
     <h1>Iniciar Sesión</h1>
-    <form action="{{ url_for('login_user') }}" method="POST">
-        <label for="correo">Correo:</label>
-        <input type="email" name="correo" required>
-        <label for="contrasena">Contraseña:</label>
-        <input type="password" name="contrasena" required>
-        <button type="submit">Iniciar Sesión</button>
+    <form action="{{ url_for('login_user') }}" method="POST" class="form">
+        <div class="form-group">
+            <label for="correo">Correo:</label>
+            <input type="email" name="correo" required class="input-field">
+        </div>
+        <div class="form-group">
+            <label for="contrasena">Contraseña:</label>
+            <input type="password" name="contrasena" required class="input-field">
+        </div>
+        <button type="submit" class="button">Iniciar Sesión</button>
     </form>
-    <p>¿No tienes cuenta? <a href="{{ url_for('registro') }}">Regístrate aquí</a></p>
-</body>
-</html>
+    <p>¿No tienes cuenta? <a href="{{ url_for('registro') }}" class="link">Regístrate aquí</a></p>
+</div>
+{% endblock %}
